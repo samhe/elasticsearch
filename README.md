@@ -24,20 +24,37 @@ This repository contains **Dockerfile** of [ElasticSearch](http://www.elasticsea
 
 #### Attach persistent/shared directories
 
-  1. Create a mountable data directory `<data-dir>` on the host.
+  1. Create a mountable data directory `<workdir>` on the host.
 
-  2. Create ElasticSearch config file at `<data-dir>/elasticsearch.yml`.
+   ```
+   ├── conf
+   │   └── elasticsearch.yml
+   ├── data
+   │   └── hesa2-esh
+   ├── logs
+   ├── plugins
+   │   ├── bigdesk
+   │   ├── eseditor
+   │   └── head
+   └── work
+   ```
+
+  2. Create ElasticSearch config file at `<workdir>/elasticsearch.yml`.
 
     ```yml
     path:
-      logs: /data/log
-      data: /data/data
+      logs: /workdir/log
+      data: /workdir/data
+      work: /workdir/work
+      plugins: /workdir/plugins
     ```
 
   3. Start a container by mounting data directory and specifying the custom configuration file:
 
     ```sh
-    docker run -d -p 9200:9200 -p 9300:9300 -v <data-dir>:/data dockerfile/elasticsearch /elasticsearch/bin/elasticsearch -Des.config=/data/elasticsearch.yml
+    docker run -d -p 9200:9200 -p 9300:9300 -v <workdir>:/data dockerfile/elasticsearch /elasticsearch/bin/elasticsearch -Des.config=/workdir/conf/elasticsearch.yml
     ```
+
+
 
 After few seconds, open `http://<host>:9200` to see the result.
